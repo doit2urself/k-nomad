@@ -49,12 +49,12 @@ export default function QuickFilters() {
                 {category.title}
               </h3>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {category.options.map((option, optionIndex) => (
                   <button
                     key={optionIndex}
                     onClick={() => toggleFilter(option)}
-                    className={`px-6 py-3 rounded-full border transition-all duration-200 font-medium ${
+                    className={`px-6 py-3 rounded-full border transition-all duration-200 font-medium min-w-0 justify-center text-center ${
                       selectedFilters.includes(option)
                         ? 'bg-blue-600 text-white border-blue-600 shadow-md'
                         : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300 hover:bg-blue-50'
