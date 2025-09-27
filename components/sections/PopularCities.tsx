@@ -1,74 +1,134 @@
-import { Star, Users, Wifi, ArrowRight, BarChart3 } from 'lucide-react'
+'use client'
+
+import { Heart, ThumbsDown } from 'lucide-react'
+import { useState } from 'react'
 
 const cities = [
   {
     id: 1,
     name: '서울 강남구',
     emoji: '🌸',
-    rating: 4.2,
-    cost: '185만',
-    nomads: 234,
-    internet: 125,
+    likes: 142,
+    dislikes: 23,
+    budget: '200만원 이상',
+    region: '수도권',
+    environment: '도심선호',
+    bestSeason: '봄',
     image: '/placeholder-city.jpg'
   },
   {
     id: 2,
     name: '제주 제주시',
     emoji: '🍊',
-    rating: 4.6,
-    cost: '118만',
-    nomads: 89,
-    internet: 89,
+    likes: 189,
+    dislikes: 12,
+    budget: '100~200만원',
+    region: '제주도',
+    environment: '자연친화',
+    bestSeason: '봄',
     image: '/placeholder-city.jpg'
   },
   {
     id: 3,
     name: '부산 해운대구',
     emoji: '🌊',
-    rating: 4.1,
-    cost: '132만',
-    nomads: 156,
-    internet: 98,
+    likes: 156,
+    dislikes: 34,
+    budget: '100~200만원',
+    region: '경상도',
+    environment: '자연친화',
+    bestSeason: '여름',
     image: '/placeholder-city.jpg'
   },
   {
     id: 4,
     name: '강릉시',
     emoji: '🏔️',
-    rating: 4.3,
-    cost: '95만',
-    nomads: 67,
-    internet: 76,
+    likes: 98,
+    dislikes: 15,
+    budget: '100만원',
+    region: '강원도',
+    environment: '자연친화',
+    bestSeason: '여름',
     image: '/placeholder-city.jpg'
   },
   {
     id: 5,
     name: '대전 유성구',
     emoji: '🌉',
-    rating: 4.0,
-    cost: '98만',
-    nomads: 45,
-    internet: 112,
+    likes: 76,
+    dislikes: 19,
+    budget: '100만원',
+    region: '충청도',
+    environment: '코워킹 필수',
+    bestSeason: '가을',
     image: '/placeholder-city.jpg'
   }
 ]
 
 export default function PopularCities() {
+  // 각 도시별 좋아요/싫어요 상태 관리
+  const [cityLikes, setCityLikes] = useState<{[key: number]: number}>(
+    cities.reduce((acc, city) => ({ ...acc, [city.id]: city.likes }), {})
+  )
+  const [cityDislikes, setCityDislikes] = useState<{[key: number]: number}>(
+    cities.reduce((acc, city) => ({ ...acc, [city.id]: city.dislikes }), {})
+  )
+  const [userActions, setUserActions] = useState<{[key: number]: 'like' | 'dislike' | null}>({})
+
+  // 좋아요 수 기준으로 도시 정렬
+  const sortedCities = [...cities].sort((a, b) => {
+    const likesA = cityLikes[a.id] || a.likes
+    const likesB = cityLikes[b.id] || b.likes
+    return likesB - likesA
+  })
+
+  // 좋아요/싫어요 클릭 핸들러
+  const handleLikeClick = (cityId: number) => {
+    const currentAction = userActions[cityId]
+
+    if (currentAction === 'like') {
+      // 좋아요 취소
+      setCityLikes(prev => ({ ...prev, [cityId]: prev[cityId] - 1 }))
+      setUserActions(prev => ({ ...prev, [cityId]: null }))
+    } else {
+      // 좋아요 추가
+      setCityLikes(prev => ({ ...prev, [cityId]: prev[cityId] + 1 }))
+      if (currentAction === 'dislike') {
+        setCityDislikes(prev => ({ ...prev, [cityId]: prev[cityId] - 1 }))
+      }
+      setUserActions(prev => ({ ...prev, [cityId]: 'like' }))
+    }
+  }
+
+  const handleDislikeClick = (cityId: number) => {
+    const currentAction = userActions[cityId]
+
+    if (currentAction === 'dislike') {
+      // 싫어요 취소
+      setCityDislikes(prev => ({ ...prev, [cityId]: prev[cityId] - 1 }))
+      setUserActions(prev => ({ ...prev, [cityId]: null }))
+    } else {
+      // 싫어요 추가
+      setCityDislikes(prev => ({ ...prev, [cityId]: prev[cityId] + 1 }))
+      if (currentAction === 'like') {
+        setCityLikes(prev => ({ ...prev, [cityId]: prev[cityId] - 1 }))
+      }
+      setUserActions(prev => ({ ...prev, [cityId]: 'dislike' }))
+    }
+  }
+
   return (
     <section className="py-16 lg:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 lg:mb-0">
-            🔥 지금 인기 있는 노마드 도시 TOP 6
+        <div className="text-center mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+            도시 리스트
           </h2>
-          <button className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-            <BarChart3 className="w-5 h-5" />
-            전체 순위 보기
-          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {cities.map((city) => (
+          {sortedCities.map((city) => (
             <div
               key={city.id}
               className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-200 overflow-hidden group cursor-pointer"
@@ -86,41 +146,69 @@ export default function PopularCities() {
 
               {/* 도시 정보 */}
               <div className="p-4">
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="font-semibold">{city.rating}</span>
+                {/* 좋아요/싫어요 버튼 */}
+                <div className="flex items-center gap-2 mb-4">
+                  <button
+                    onClick={() => handleLikeClick(city.id)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded transition-all duration-200 ${
+                      userActions[city.id] === 'like'
+                        ? 'bg-red-50 border border-red-200'
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <Heart
+                      className={`w-4 h-4 transition-colors duration-200 ${
+                        userActions[city.id] === 'like'
+                          ? 'text-red-500 fill-current'
+                          : 'text-gray-400'
+                      }`}
+                    />
+                    <span className="text-sm font-medium">{cityLikes[city.id]}</span>
+                  </button>
+                  <button
+                    onClick={() => handleDislikeClick(city.id)}
+                    className={`flex items-center gap-1 px-2 py-1 rounded transition-all duration-200 ${
+                      userActions[city.id] === 'dislike'
+                        ? 'bg-gray-100 border border-gray-300'
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <ThumbsDown
+                      className={`w-4 h-4 transition-colors duration-200 ${
+                        userActions[city.id] === 'dislike'
+                          ? 'text-gray-600 fill-current'
+                          : 'text-gray-400'
+                      }`}
+                    />
+                    <span className="text-sm font-medium">{cityDislikes[city.id]}</span>
+                  </button>
+                </div>
+
+                {/* Key-Value 형태의 필터 정보 */}
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">💰 예산:</span>
+                    <span className="font-medium text-gray-900">{city.budget}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-green-600 font-semibold">💰</span>
-                    <span className="font-semibold">{city.cost}</span>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">📍 지역:</span>
+                    <span className="font-medium text-gray-900">{city.region}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm">{city.nomads}명</span>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">🌿 환경:</span>
+                    <span className="font-medium text-gray-900">{city.environment}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Wifi className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{city.internet}M</span>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-500">🌸 최고 계절:</span>
+                    <span className="font-medium text-gray-900">{city.bestSeason}</span>
                   </div>
                 </div>
 
-                <button className="w-full bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-600 py-2 px-4 rounded-lg transition-colors font-medium text-sm group-hover:bg-blue-50 group-hover:text-blue-600">
-                  자세히 보기
-                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* 더 많은 도시 보기 CTA */}
-        <div className="text-center mt-12">
-          <button className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
-            <Star className="w-5 h-5" />
-            더 많은 도시 둘러보기
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
       </div>
     </section>
   )

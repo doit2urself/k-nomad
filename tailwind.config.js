@@ -54,6 +54,43 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Nature theme colors
+        earth: {
+          50: "hsl(33, 8%, 97%)", // Warm cream
+          100: "hsl(33, 8%, 92%)", // Light sand
+          200: "hsl(30, 15%, 85%)", // Warm stone
+          300: "hsl(30, 20%, 75%)", // Medium sand
+          400: "hsl(27, 25%, 55%)", // Clay brown
+          500: "hsl(27, 22%, 45%)", // Medium brown
+          600: "hsl(27, 22%, 35%)", // Dark brown
+          700: "hsl(27, 22%, 25%)", // Very dark brown
+          800: "hsl(27, 15%, 15%)", // Deep brown
+          900: "hsl(27, 10%, 10%)", // Almost black
+        },
+        forest: {
+          50: "hsl(85, 25%, 95%)", // Very light sage
+          100: "hsl(85, 25%, 85%)", // Light sage
+          200: "hsl(85, 25%, 75%)", // Sage green
+          300: "hsl(85, 30%, 65%)", // Medium sage
+          400: "hsl(120, 40%, 55%)", // Soft green
+          500: "hsl(142, 69%, 45%)", // Forest green
+          600: "hsl(142, 69%, 35%)", // Deep forest
+          700: "hsl(142, 69%, 25%)", // Dark forest
+          800: "hsl(142, 60%, 15%)", // Very dark forest
+          900: "hsl(142, 50%, 10%)", // Deep forest night
+        },
+        moss: {
+          50: "hsl(95, 15%, 95%)", // Very light moss
+          100: "hsl(95, 15%, 85%)", // Light moss
+          200: "hsl(95, 20%, 75%)", // Medium moss
+          300: "hsl(95, 25%, 65%)", // Moss green
+          400: "hsl(95, 30%, 55%)", // Rich moss
+          500: "hsl(95, 35%, 45%)", // Deep moss
+          600: "hsl(95, 40%, 35%)", // Dark moss
+          700: "hsl(95, 45%, 25%)", // Very dark moss
+          800: "hsl(95, 50%, 15%)", // Deep moss
+          900: "hsl(95, 55%, 10%)", // Almost black moss
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
